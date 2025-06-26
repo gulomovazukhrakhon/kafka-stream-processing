@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+*.env
+
+# Docker
+*.log
+*.pid
+*.sock
+*.db
+*.tar
+**/.DS_Store
+
+# VSCode / JetBrains
+.vscode/
+.idea/
+
+# Jupyter/Notebooks
+.ipynb_checkpoints/
