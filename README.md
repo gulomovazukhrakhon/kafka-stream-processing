@@ -63,7 +63,7 @@ elective2/
 
 ```bash
 git clone https://github.com/gulomovazukhrakhon/kafka-stream-processing.git
-cd elective2
+cd kafka-stream-processing
 ```
 ### 2. Run Docker Compose
 ```bash
