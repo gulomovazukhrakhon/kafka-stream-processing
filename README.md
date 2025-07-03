@@ -114,7 +114,7 @@ Logs are visible via:
 ```bash
 docker logs kafka-producer
 docker logs kafka-consumer
-
+```
 ---
 
 ## 🔍 How It Works
@@ -137,10 +137,11 @@ docker logs kafka-consumer
 
 ---
 
-## 📚 Dataset Source
+## 📚 Project Links
 
-[Kaggle: Environmental Sensor Data (132k rows)](https://www.kaggle.com/datasets/garystafford/environmental-sensor-data-132k)
-
+* Dataset: https://www.kaggle.com/datasets/garystafford/environmental-sensor-data-132k
+* Demo Video: https://drive.google.com/file/d/1HbTVXW3YuX7w2Z4ZMJYFX2QbSTGLFdvm/
+  
 ---
 
 ## 👩‍💻 Author
