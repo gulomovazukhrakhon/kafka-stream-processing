@@ -103,6 +103,20 @@ Created automatically via init.sql. Structure:
 
 ---
 
+## 🧾 Logging and Monitoring
+
+Both Python services implement robust logging using the `logging` module:
+- Logs include timestamps, levels (INFO, WARNING, ERROR)
+- Logged to both Docker container stdout and `.log` files inside the `/logs` directory
+- Helpful for debugging retries, Kafka/DB issues, and success confirmations
+
+Logs are visible via:
+```bash
+docker logs kafka-producer
+docker logs kafka-consumer
+
+---
+
 ## 🔍 How It Works
 
 1. producer.py reads CSV row by row
