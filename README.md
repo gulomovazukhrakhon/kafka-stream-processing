@@ -41,6 +41,9 @@ elective2/
 │ ├── consumer.py
 │ ├── requirements.txt
 │ └── Dockerfile
+├── logs/
+│ ├── consumer.log
+│ ├── producer.log
 ├── db/
 │ └── init.sql
 ├── docker-compose.yml

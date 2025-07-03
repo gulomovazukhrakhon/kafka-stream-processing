@@ -49,6 +49,8 @@ services:
       - broker
     volumes:
       - ./dataset:/app/dataset
+      - ./logs:/app/logs
+
 
 
   consumer:
@@ -58,6 +60,8 @@ services:
       - zookeeper
       - broker
       - postgres
+    volumes:
+      - ./logs:/app/logs
 
 
   kafka-ui:

@@ -1,6 +1,7 @@
 # Import Libraries
 import time
 import json
+import logging
 import pandas as pd
 from kafka import KafkaProducer
 from kafka.admin import KafkaAdminClient, NewTopic
@@ -14,6 +15,16 @@ KAFKA_TOPIC = 'kafka-topic-postgress'
 KAFKA_ANDMIN_CLIENT = 'admin-client'
 PRODUCER_CLIENT_ID = 'producer'
 
+
+# Logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('/app/logs/producer.log', mode='a'),
+        logging.StreamHandler()
+    ]
+)
 
 ## Lifespan
 def create_topic_if_not_exists():
@@ -33,7 +44,7 @@ def create_topic_if_not_exists():
             ]
         )
         except TopicAlreadyExistsError as e:
-            print(f"Topic {KAFKA_TOPIC} already exists! Skipping the creation...")
+            logging.warning(f"Topic {KAFKA_TOPIC} already exists! Skipping the creation...")
 
 
 ## Serializer
@@ -52,10 +63,10 @@ for i in range(max_retries):
             value_serializer=serializer,
             client_id=PRODUCER_CLIENT_ID,
         )
-        print(f"Attempt {i+1}: Kafka producer initialized successfully.")
+        logging.info(f"Attempt {i+1}: Kafka producer initialized successfully.")
         break
     except Exception as e:
-        print(f"Attempt {i+1}: Error initializing producer: {e}. Retrying in {retry_delay} seconds...")
+        logging.warning(f"Attempt {i+1}: Error initializing producer: {e}. Retrying in {retry_delay} seconds...")
         time.sleep(retry_delay)
 
 
@@ -65,12 +76,12 @@ def real_time_simulation(file_path=FILE_PATH):
 
     for _, row in df.iterrows():
         message = row.to_dict()
-        print("Sending:", message)
+        logging.info(f"Sending: {message}")
         try:
             producer.send(KAFKA_TOPIC, value=message)
             producer.flush()
         except Exception as e:
-            print(f'Failed to send message: {e}')
+            logging.error(f'Failed to send message: {e}')
 
         time.sleep(5)
 

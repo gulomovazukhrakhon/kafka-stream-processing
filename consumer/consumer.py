@@ -1,7 +1,9 @@
-from kafka import KafkaConsumer
 import psycopg2
 import json
 import time
+import logging
+
+from kafka import KafkaConsumer
 
 
 # Constants
@@ -15,6 +17,17 @@ POSTGRES_USER = 'postgres_user'
 POSTGRES_PASSWORD = 'secret'
 
 
+# Logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('/app/logs/consumer.log', mode='a'),
+        logging.StreamHandler()
+    ]
+)
+
+
 # Deserializer
 def deserializer(value):
     if value is None:
@@ -23,7 +36,7 @@ def deserializer(value):
     try:
         return json.loads(value.decode('utf-8'))
     except:
-        print('Unable to decode')
+        logging.error('Unable to decode')
         return None
     
 
@@ -43,10 +56,10 @@ for i in range(max_retries):
             group_id=KAFKA_CONSUMER_ID,
             value_deserializer=deserializer
         )
-        print(f'Attempt {i+1}: Kafka Consumer initialized successfully!')
+        logging.info(f'Attempt {i+1}: Kafka Consumer initialized successfully!')
         break
     except Exception as e:
-        print(f'Attempt {i+1}: Errror intializing consumer: {e}. Retrying in {retry_delay} seconds...')
+        logging.warning(f'Attempt {i+1}: Errror intializing consumer: {e}. Retrying in {retry_delay} seconds...')
         time.sleep(retry_delay)
 
 
@@ -59,25 +72,25 @@ for i in range(max_retries):
             user=POSTGRES_USER, 
             password=POSTGRES_PASSWORD
         )
-        print(f"Attempt {i+1}: Postgres is connected successfully")
+        logging.info(f"Attempt {i+1}: Postgres is connected successfully")
         break
     except Exception as e:
-        print(e)
+        logging.warning(e)
         time.sleep(retry_delay)
 
 
 if conn is not None:
-    print('Connection established to PostgreSQL.')
+    logging.info('Connection established to PostgreSQL.')
     cur = conn.cursor()
 else:
-    print('Connection NOT established to PostgreSQL.')
+    logging.error('Connection NOT established to PostgreSQL.')
 
 
 # Connect PostgreSQL to Kafka
 def kafka_consumer(conn=conn):
     for message in consumer:
         data = message.value
-        print(data)
+        logging.info(data)
         cur.execute(
             "INSERT INTO telemtry_data (ts, device, co, humidity, light, lpg, motion, smoke, temp) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", 
             (data['ts'], data['device'], data['co'], data['humidity'], data['light'], data['lpg'], data['motion'], data['smoke'], data['temp'])
